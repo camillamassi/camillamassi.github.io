@@ -26,9 +26,9 @@ renderSprite('heart2Sprite', HEART_BITMAP, heartColors);
 renderSprite('heart3Sprite', HEART_BITMAP, heartColors);
 
 let state = { chato: 0, cilla: 0 };
-let db = null;
-let docRef = null;
-let ready = false;
+//let db = null;
+//let docRef = null;
+//let ready = false;
 
 const els = {
   status: document.getElementById('status'),
@@ -68,7 +68,9 @@ async function updateCounter(key, delta) {
 
   const { error } = await supabase
     .from('counters')
-    .update({ nextValue })
+    .update({
+      nextValue
+    })
     .eq('id', 'main');
 
   if (error) {
@@ -105,6 +107,11 @@ async function init() {
     els.status.textContent = '> ERRORE CONNESSIONE';
     return;
   }
+  
+  state = {
+    chato: data.chato,
+    cilla: data.cilla
+  };
 
   render();
   setButtonsEnabled(true);
