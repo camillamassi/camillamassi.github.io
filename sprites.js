@@ -23,7 +23,7 @@ function toRows(grid) {
 }
 
 // --- Alieno stile Space Invaders ---
-const INVADER_BITMAP = [
+const INVADER_BITMAP_A = [
   "00100000100",
   "00010001000",
   "00111111100",
@@ -32,6 +32,17 @@ const INVADER_BITMAP = [
   "10111111101",
   "10100000101",
   "00011011000",
+];
+
+const INVADER_BITMAP_B = [
+  "00100000100",
+  "10010001001",
+  "10111111101",
+  "11101110111",
+  "01111111110",
+  "00111111100",
+  "00100000100",
+  "01000000010",
 ];
 
 // --- Boccali di birra: due bicchieri con manico e schiuma, che brindano ---
