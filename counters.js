@@ -5,8 +5,8 @@
 // sostituita da Supabase.
 
 renderSprite('spriteBeer', BEER_BITMAP, { '1': 'var(--yellow)', '3': '#fff6db' });
-renderSprite('spriteA', INVADER_BITMAP, { '1': 'var(--cyan)' });
-renderSprite('spriteB', INVADER_BITMAP, { '1': 'var(--magenta)' });
+renderSprite('spriteA', INVADER_BITMAP_A, { '1': 'var(--cyan)' });
+renderSprite('spriteB', INVADER_BITMAP_B, { '1': 'var(--magenta)' });
 renderSprite('titleSpriteA', INVADER_BITMAP_A, { '1': 'var(--cyan)' });
 renderSprite('titleSpriteB', INVADER_BITMAP_B, { '1': 'var(--magenta)' });
 
