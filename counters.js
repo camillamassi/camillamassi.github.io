@@ -4,6 +4,12 @@
 // prima: usa ancora window.claude.use('db'), in attesa di essere
 // sostituita da Supabase.
 
+npm install @supabase/supabase-js
+import { createClient } from '@supabase/supabase-js'
+const SUPABASE_URL = 'https://vxzeeyvfggcecdytcgep.supabase.co'
+const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_79CJfXxavEqyTEmynsxDgA_qzYD1pGo'
+const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY)
+
 renderSprite('spriteBeer', BEER_BITMAP, { '1': 'var(--yellow)', '3': '#fff6db' });
 renderSprite('spriteA', INVADER_BITMAP_A, { '1': 'var(--cyan)' });
 renderSprite('spriteB', INVADER_BITMAP_B, { '1': 'var(--magenta)' });
@@ -75,12 +81,25 @@ els.minusA.addEventListener('click', () => updateCounter('a', -1));
 els.plusB.addEventListener('click', () => updateCounter('b', 1));
 els.minusB.addEventListener('click', () => updateCounter('b', -1));
 
+// async function init() {
+//   try {
+//     db = await window.claude.use('db');
+//   } catch (e) {
+//     db = null;
+//   }
+
 async function init() {
-  try {
-    db = await window.claude.use('db');
-  } catch (e) {
-    db = null;
+  const { db, error } = await supabase
+    .from('counters')
+    .select('*')
+    .eq('id', 'main')
+    .single();
+
+  if (error) {
+    console.error(error);
+    return;
   }
+}
 
   if (!db) {
     els.status.textContent = '> MODALITA LOCALE (NON CONDIVISA)';
