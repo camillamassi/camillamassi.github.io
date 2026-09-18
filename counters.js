@@ -65,21 +65,27 @@ function setButtonsEnabled(enabled) {
 }
 
 async function updateCounter(key, delta) {
-  if (!docRef) return;
-  const next = { ...state, [key]: state[key] + delta };
-  state = next;
-  render();
-  try {
-    await docRef.set(next);
-  } catch (err) {
-    els.status.textContent = '> ERRORE SALVATAGGIO. RIPROVA.';
+  const nextValue = state[key] + delta;
+
+  const { error } = await supabase
+    .from('counters')
+    .update({ nextValue })
+    .eq('id', 'main');
+
+  if (error) {
+    console.error(error);
+    els.status.textContent = '> ERRORE SALVATAGGIO';
+    return;
   }
+
+  state[key] = nextValue;
+  render();
 }
 
-els.plusA.addEventListener('click', () => updateCounter('a', 1));
-els.minusA.addEventListener('click', () => updateCounter('a', -1));
-els.plusB.addEventListener('click', () => updateCounter('b', 1));
-els.minusB.addEventListener('click', () => updateCounter('b', -1));
+els.plusA.addEventListener('click', () => updateCounter('chato', 1));
+els.minusA.addEventListener('click', () => updateCounter('chato', -1));
+els.plusB.addEventListener('click', () => updateCounter('cilla', 1));
+els.minusB.addEventListener('click', () => updateCounter('cilla', -1));
 
 // async function init() {
 //   try {
@@ -89,7 +95,7 @@ els.minusB.addEventListener('click', () => updateCounter('b', -1));
 //   }
 
 async function init() {
-  const { db, error } = await supabase
+  const { data, error } = await supabase
     .from('counters')
     .select('*')
     .eq('id', 'main')
@@ -97,37 +103,64 @@ async function init() {
 
   if (error) {
     console.error(error);
+    els.status.textContent = '> ERRORE CONNESSIONE';
     return;
   }
+
+  state = {
+    chato: data.chato,
+    cilla: data.cilla
+  };
+
+  render();
+  setButtonsEnabled(true);
+  els.status.textContent = '> SINCRONIZZATO';
 }
 
-  if (!db) {
-    els.status.textContent = '> MODALITA LOCALE (NON CONDIVISA)';
-    setButtonsEnabled(true);
-    ready = true;
-    return;
-  }
-
-  docRef = db.doc('counters/main');
-
-  docRef.onSnapshot(
-    (snap) => {
-      const data = snap.data();
-      if (data && typeof data.a === 'number' && typeof data.b === 'number') {
-        state = { a: data.a, b: data.b };
-      } else if (!ready) {
-        docRef.set({ a: 0, b: 0 }).catch(() => {});
-      }
-      render();
-      els.status.textContent = '> SINCRONIZZATO - VISIBILE A TUTTI';
-      setButtonsEnabled(true);
-      ready = true;
+supabase
+  .channel('counters')
+  .on(
+    'postgres_changes',
+    {
+      event: 'UPDATE',
+      schema: 'public',
+      table: 'counters'
     },
-    (err) => {
-      els.status.textContent = '> CONNESSIONE PERSA. RICARICA.';
-      setButtonsEnabled(false);
+    (payload) => {
+      state.chato = payload.new.chato;
+      state.cilla = payload.new.cilla;
+      render();
     }
-  );
-}
+  )
+  .subscribe();
+
+//  if (!db) {
+//    els.status.textContent = '> MODALITA LOCALE (NON CONDIVISA)';
+//    setButtonsEnabled(true);
+//    ready = true;
+//    return;
+//  }
+
+//  docRef = db.doc('counters/main');
+
+//  docRef.onSnapshot(
+//    (snap) => {
+//      const data = snap.data();
+//      if (data && typeof data.a === 'number' && typeof data.b === 'number') {
+//        state = { a: data.a, b: data.b };
+//      } else if (!ready) {
+//        docRef.set({ a: 0, b: 0 }).catch(() => {});
+//      }
+//      render();
+//      els.status.textContent = '> SINCRONIZZATO - VISIBILE A TUTTI';
+//      setButtonsEnabled(true);
+//      ready = true;
+//    },
+//    (err) => {
+//      els.status.textContent = '> CONNESSIONE PERSA. RICARICA.';
+//      setButtonsEnabled(false);
+//    }
+//  );
+//}
 
 init();
