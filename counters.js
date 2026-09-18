@@ -4,7 +4,6 @@
 // prima: usa ancora window.claude.use('db'), in attesa di essere
 // sostituita da Supabase.
 
-npm install @supabase/supabase-js
 import { createClient } from '@supabase/supabase-js'
 const SUPABASE_URL = 'https://vxzeeyvfggcecdytcgep.supabase.co'
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_79CJfXxavEqyTEmynsxDgA_qzYD1pGo'
