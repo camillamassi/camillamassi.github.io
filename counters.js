@@ -25,7 +25,7 @@ renderSprite('heart1Sprite', HEART_BITMAP, heartColors);
 renderSprite('heart2Sprite', HEART_BITMAP, heartColors);
 renderSprite('heart3Sprite', HEART_BITMAP, heartColors);
 
-let state = { a: 0, b: 0 };
+let state = { chato: 0, cilla: 0 };
 let db = null;
 let docRef = null;
 let ready = false;
@@ -52,9 +52,9 @@ function drinkVerdict(diff) {
 }
 
 function render() {
-  els.valueA.textContent = state.a;
-  els.valueB.textContent = state.b;
-  const diff = state.a - state.b;
+  els.valueA.textContent = state.chato;
+  els.valueB.textContent = state.cilla;
+  const diff = state.chato - state.cilla;
   els.diffValue.innerHTML = drinkVerdict(diff);
   els.beerIcon.style.visibility = diff === 0 ? 'visible' : 'hidden';
 }
@@ -105,11 +105,6 @@ async function init() {
     els.status.textContent = '> ERRORE CONNESSIONE';
     return;
   }
-
-  state = {
-    chato: data.chato,
-    cilla: data.cilla
-  };
 
   render();
   setButtonsEnabled(true);
